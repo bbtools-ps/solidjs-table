@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { ColumnDef } from '@tanstack/solid-table';
 import { createSignal } from 'solid-js';
-import Table from './Table';
+import Table from './Table/Table';
 
 type Person = {
   firstName: string;
@@ -65,7 +65,7 @@ export default function App() {
   };
 
   return (
-    <main class="flex max-w-5xl flex-1 flex-col items-center overflow-hidden p-2">
+    <main class="flex flex-1 flex-col items-center p-2">
       <h1 class="mb-5 text-center text-5xl">
         Table <strong>(SolidJS)</strong>
       </h1>
@@ -75,9 +75,9 @@ export default function App() {
         type="text"
         onInput={handleSearch}
         placeholder="Type to filter by first name..."
-        class="mb-4 w-full border p-2"
+        class="mb-4 w-4xl border p-2"
       />
-      <Table data={data} columns={COLUMNS} />
+      <Table data={data} columns={COLUMNS} isReorderable isSortable />
     </main>
   );
 }

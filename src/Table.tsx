@@ -10,10 +10,11 @@ import {
   getSortedRowModel,
 } from '@tanstack/solid-table';
 import { clsx } from 'clsx';
-import { AiFillCaretDown, AiFillCaretLeft, AiFillCaretRight, AiFillCaretUp } from 'solid-icons/ai';
+import { AiFillCaretLeft, AiFillCaretRight } from 'solid-icons/ai';
 import { RiEditorDraggable } from 'solid-icons/ri';
-import { Accessor, For, Show, createEffect, createMemo, createSignal } from 'solid-js';
-import { DraggableItem } from './DraggableItem';
+import { Accessor, createEffect, createMemo, createSignal, For, Show } from 'solid-js';
+import { DraggableItem } from './Table/DraggableItem';
+import { SortIndicator } from './Table/SortIndicator';
 
 interface SortingState {
   id: string;
@@ -28,9 +29,16 @@ interface PaginationState {
 interface TableProps<T> {
   data: Accessor<T[]>;
   columns: ColumnDef<T>[];
+  isReorderable?: boolean;
+  isSortable?: boolean;
 }
 
-export default function Table({ data, columns }: TableProps<any>) {
+export default function Table({
+  data,
+  columns,
+  isReorderable = false,
+  isSortable = false,
+}: TableProps<any>) {
   const [sorting, setSorting] = createSignal<SortingState[]>([{ id: 'firstName', desc: false }]);
   const [pagination, setPagination] = createSignal<PaginationState>({ pageIndex: 0, pageSize: 10 });
   const [columnOrder, setColumnOrder] = createSignal<string[]>([]);
@@ -136,32 +144,53 @@ export default function Table({ data, columns }: TableProps<any>) {
                     role="row"
                   >
                     <Show when={!header.isPlaceholder}>
-                      <DraggableItem
-                        id={header.column.id}
-                        content={
-                          flexRender(header.column.columnDef.header, header.getContext()) as string
+                      <Show
+                        when={isReorderable}
+                        fallback={
+                          <div
+                            class={
+                              isSortable && header.column.getCanSort()
+                                ? 'flex items-center justify-between p-2 select-none'
+                                : 'p-2'
+                            }
+                            onClick={
+                              isSortable ? header.column.getToggleSortingHandler() : undefined
+                            }
+                          >
+                            <span class="flex items-center gap-1">
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </span>
+                            <SortIndicator isSortable={isSortable} header={header} />
+                          </div>
                         }
                       >
-                        <div
-                          class={
-                            header.column.getCanSort()
-                              ? 'flex items-center justify-between p-2 select-none'
-                              : 'p-2'
+                        <DraggableItem
+                          id={header.column.id}
+                          content={
+                            flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            ) as string
                           }
-                          onClick={header.column.getToggleSortingHandler()}
                         >
-                          <span class="flex items-center gap-1">
-                            <RiEditorDraggable class="text-gray-400" />
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                          </span>
-                          <span>
-                            {{
-                              asc: <AiFillCaretDown />,
-                              desc: <AiFillCaretUp />,
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </span>
-                        </div>
-                      </DraggableItem>
+                          <div
+                            class={
+                              isSortable && header.column.getCanSort()
+                                ? 'flex items-center justify-between p-2 select-none'
+                                : 'p-2'
+                            }
+                            onClick={
+                              isSortable ? header.column.getToggleSortingHandler() : undefined
+                            }
+                          >
+                            <span class="flex items-center gap-1">
+                              <RiEditorDraggable class="text-gray-400" />
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </span>
+                            <SortIndicator isSortable={isSortable} header={header} />
+                          </div>
+                        </DraggableItem>
+                      </Show>
                     </Show>
                   </div>
                 )}
