@@ -111,7 +111,7 @@ export function DraggableItem(props: { id: string; content: string; children?: a
 
   return (
     <>
-      <div class="relative flex flex-1" role="columnheader">
+      <div class="relative flex flex-1">
         <div
           ref={ref}
           data-column-id={props.id}

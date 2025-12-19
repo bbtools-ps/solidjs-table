@@ -29,7 +29,7 @@ interface TableHeaderCellProps {
 }
 
 function TableHeaderCell({ header }: TableHeaderCellProps) {
-  const { isSortable, isResizable } = useTableContext();
+  const { isSortable } = useTableContext();
 
   return (
     <div
@@ -52,44 +52,46 @@ export default function TableHeader() {
   return (
     <For each={table.getHeaderGroups()}>
       {(headerGroup) => (
-        <div class="flex w-fit border-b border-gray-300 bg-white pr-4" role="rowgroup">
-          <For each={headerGroup.headers}>
-            {(header) => (
-              <div
-                class="relative flex border-gray-300 p-0 not-last:border-r"
-                style={{
-                  width: `calc(var(--col-${header?.id}-size) * 1px)`,
-                }}
-                role="row"
-              >
-                <Show when={!header.isPlaceholder}>
-                  <Show
-                    when={isReorderable && !(isSelectable && header.column.id === 'select')}
-                    fallback={<TableHeaderCell header={header} />}
-                  >
-                    <DraggableItem
-                      id={header.column.id}
-                      content={
-                        flexRender(header.column.columnDef.header, header.getContext()) as string
-                      }
+        <div class="flex w-full border-b border-gray-300 bg-white pr-4" role="rowgroup">
+          <div class="flex flex-1" role="row">
+            <For each={headerGroup.headers}>
+              {(header) => (
+                <div
+                  class="relative flex border-gray-300 p-0 not-last:shadow-[1px_0_0_0_#d1d5dc]"
+                  style={{
+                    width: `calc(var(--col-${header?.id}-size) * 1px)`,
+                  }}
+                  role="columnheader"
+                >
+                  <Show when={!header.isPlaceholder}>
+                    <Show
+                      when={isReorderable && !(isSelectable && header.column.id === 'select')}
+                      fallback={<TableHeaderCell header={header} />}
                     >
-                      <TableHeaderCell header={header} />
-                    </DraggableItem>
-                    <Show when={isResizable}>
-                      <div
-                        onMouseDown={isResizable ? header.getResizeHandler() : undefined}
-                        onTouchStart={isResizable ? header.getResizeHandler() : undefined}
-                        class={clsx(
-                          'absolute top-0 right-0 h-full w-1 cursor-col-resize touch-none bg-blue-500 opacity-0 select-none hover:opacity-100',
-                          header.column.getIsResizing() ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
+                      <DraggableItem
+                        id={header.column.id}
+                        content={
+                          flexRender(header.column.columnDef.header, header.getContext()) as string
+                        }
+                      >
+                        <TableHeaderCell header={header} />
+                      </DraggableItem>
+                      <Show when={isResizable}>
+                        <div
+                          onMouseDown={isResizable ? header.getResizeHandler() : undefined}
+                          onTouchStart={isResizable ? header.getResizeHandler() : undefined}
+                          class={clsx(
+                            'absolute top-0 right-0 h-full w-1 cursor-col-resize touch-none bg-blue-500 opacity-0 select-none hover:opacity-100',
+                            header.column.getIsResizing() ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                      </Show>
                     </Show>
                   </Show>
-                </Show>
-              </div>
-            )}
-          </For>
+                </div>
+              )}
+            </For>
+          </div>
         </div>
       )}
     </For>

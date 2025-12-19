@@ -67,6 +67,7 @@ export default function Table({
                     type="checkbox"
                     checked={table.getIsAllRowsSelected()}
                     onChange={table.getToggleAllRowsSelectedHandler()}
+                    aria-label="Select all"
                   />
                 </div>
               );
@@ -78,6 +79,7 @@ export default function Table({
                   checked={row.getIsSelected()}
                   disabled={!row.getCanSelect()}
                   onChange={row.getToggleSelectedHandler()}
+                  aria-label="Select row"
                 />
               </div>
             ),

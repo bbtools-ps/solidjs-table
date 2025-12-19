@@ -29,7 +29,7 @@ export default function TableBody() {
               <For each={row.getVisibleCells()}>
                 {(cell) => (
                   <div
-                    class="flex border-gray-300 p-2 not-last:border-r"
+                    class="flex overflow-hidden border-gray-300 p-2 not-last:shadow-[1px_0_0_0_#d1d5dc]"
                     style={{
                       width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
                     }}
