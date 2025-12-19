@@ -106,15 +106,18 @@ export default function Table({ data, columns }: TableProps<any>) {
   });
 
   return (
-    <div class="flex w-full flex-col overflow-auto">
-      <table class="w-full overflow-hidden overflow-y-auto">
-        <thead class="sticky -top-px bg-white shadow-md">
+    <div class="flex w-full flex-col overflow-x-hidden overflow-y-auto border border-gray-300">
+      <table class="flex-1">
+        <thead class="sticky top-0 bg-white shadow-md">
           <For each={table.getHeaderGroups()}>
             {(headerGroup) => (
               <tr>
                 <For each={headerGroup.headers}>
                   {(header) => (
-                    <th colSpan={header.colSpan} class="relative border border-gray-300 p-0">
+                    <th
+                      colSpan={header.colSpan}
+                      class="relative border-gray-300 p-0 not-last:border-r"
+                    >
                       <Show when={!header.isPlaceholder}>
                         <DraggableItem
                           id={header.column.id}
@@ -128,7 +131,7 @@ export default function Table({ data, columns }: TableProps<any>) {
                           <div
                             class={
                               header.column.getCanSort()
-                                ? 'flex cursor-pointer items-center justify-between p-2 select-none'
+                                ? 'flex items-center justify-between p-2 select-none'
                                 : 'p-2'
                             }
                             onClick={header.column.getToggleSortingHandler()}
@@ -159,7 +162,7 @@ export default function Table({ data, columns }: TableProps<any>) {
               <tr class={index() % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
                 <For each={row.getVisibleCells()}>
                   {(cell) => (
-                    <td class="border border-gray-300 p-2">
+                    <td class="border-gray-300 p-2 not-last:border-r">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   )}
@@ -169,7 +172,7 @@ export default function Table({ data, columns }: TableProps<any>) {
           </For>
         </tbody>
       </table>
-      <div class="sticky bottom-0 flex items-center justify-between bg-white py-1">
+      <div class="sticky bottom-0 flex items-center justify-between border-t border-gray-300 bg-white py-1">
         <div class="flex items-center gap-1">
           <button
             class="m-1 flex items-center px-3 py-1"
@@ -184,23 +187,10 @@ export default function Table({ data, columns }: TableProps<any>) {
               each={(() => {
                 const current = table.getState().pagination.pageIndex;
                 const total = table.getPageCount();
-                const pages: (number | string)[] = [];
-
-                if (total <= 7) {
-                  for (let i = 0; i < total; i++) pages.push(i);
-                } else {
-                  pages.push(0);
-                  if (current > 3) pages.push('...');
-
-                  const start = Math.max(1, current - 1);
-                  const end = Math.min(total - 2, current + 1);
-
-                  for (let i = start; i <= end; i++) pages.push(i);
-
-                  if (current < total - 4) pages.push('...');
-                  pages.push(total - 1);
-                }
-
+                const maxPages = Math.min(5, total - current);
+                const pages = Array.from({ length: maxPages }, (_, i) =>
+                  i + 1 === maxPages && maxPages === 5 ? '...' : current + i
+                );
                 return pages;
               })()}
             >

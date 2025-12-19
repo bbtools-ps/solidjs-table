@@ -67,6 +67,8 @@ export default function App() {
   return (
     <div class="flex max-w-5xl flex-1 flex-col overflow-hidden p-2">
       <input
+        id="search-input"
+        name="search"
         type="text"
         onInput={handleSearch}
         placeholder="Type to filter by first name..."

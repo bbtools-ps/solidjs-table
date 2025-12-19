@@ -12,16 +12,16 @@ const edgeToOrientationMap: Record<Edge, Orientation> = {
 
 const orientationStyles: Record<Orientation, JSX.HTMLAttributes<HTMLElement>['class']> = {
   horizontal:
-    'h-[var(--line-thickness)] left-[var(--terminal-radius)] right-0 before:left-[var(--negative-terminal-size)]',
+    'h-(--line-thickness) left-(--terminal-radius) right-0 before:left-(--negative-terminal-size)',
   vertical:
-    'w-[var(--line-thickness)] top-[var(--terminal-radius)] bottom-0 before:top-[var(--negative-terminal-size)]',
+    'w-(--line-thickness) top-(--terminal-radius) bottom-0 before:top-(--negative-terminal-size)',
 };
 
 const edgeStyles: Record<Edge, JSX.HTMLAttributes<HTMLElement>['class']> = {
-  top: 'top-[var(--line-offset)] before:top-[var(--offset-terminal)]',
-  right: 'right-[var(--line-offset)] before:right-[var(--offset-terminal)]',
-  bottom: 'bottom-[var(--line-offset)] before:bottom-[var(--offset-terminal)]',
-  left: 'left-[var(--line-offset)] before:left-[var(--offset-terminal)]',
+  top: 'top-(--line-offset) before:top-(--offset-terminal)',
+  right: 'right-(--line-offset) before:right-(--offset-terminal)',
+  bottom: 'bottom-(--line-offset) before:bottom-(--offset-terminal)',
+  left: 'left-(--line-offset) before:left-(--offset-terminal)',
 };
 
 const strokeSize = 2;
@@ -44,7 +44,7 @@ export function DropIndicator(props: { edge: Edge; gap: string }) {
           '--offset-terminal': `${offsetToAlignTerminalWithLine}px`,
         } as JSX.CSSProperties
       }
-      class={`pointer-events-none absolute z-10 box-border bg-blue-700 before:absolute before:h-(--terminal-size) before:w-[(--terminal-size)] before:rounded-full before:border-[length:(--line-thickness)] before:border-solid before:border-blue-700 before:content-[''] ${orientationStyles[edgeToOrientationMap[props.edge]]} ${[edgeStyles[props.edge]]}`}
+      class={`pointer-events-none absolute z-10 box-border bg-blue-700 before:absolute before:h-(--terminal-size) before:w-(--terminal-size) before:rounded-full before:border-(length:--line-thickness) before:border-solid before:border-blue-700 before:content-[''] ${orientationStyles[edgeToOrientationMap[props.edge]]} ${[edgeStyles[props.edge]]}`}
     />
   );
 }
