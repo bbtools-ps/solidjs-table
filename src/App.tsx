@@ -65,7 +65,10 @@ export default function App() {
   };
 
   return (
-    <div class="flex max-w-5xl flex-1 flex-col overflow-hidden p-2">
+    <main class="flex max-w-5xl flex-1 flex-col items-center overflow-hidden p-2">
+      <h1 class="mb-5 text-center text-5xl">
+        Table <strong>(SolidJS)</strong>
+      </h1>
       <input
         id="search-input"
         name="search"
@@ -75,6 +78,6 @@ export default function App() {
         class="mb-4 w-full border p-2"
       />
       <Table data={data} columns={COLUMNS} />
-    </div>
+    </main>
   );
 }

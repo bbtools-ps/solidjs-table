@@ -117,73 +117,93 @@ export default function Table({ data, columns }: TableProps<any>) {
   });
 
   return (
-    <div class="flex max-h-150 w-fit flex-col border border-gray-300" style={columnSizeVars()}>
-      <For each={table.getHeaderGroups()}>
-        {(headerGroup) => (
-          <div class="flex w-fit border-b border-gray-300 bg-white shadow-md">
-            <For each={headerGroup.headers}>
-              {(header) => (
-                <div
-                  class="border-gray-300 p-0 not-last:border-r"
-                  style={{
-                    width: `calc(var(--col-${header?.id}-size) * 1px)`,
-                  }}
-                >
-                  <Show when={!header.isPlaceholder}>
-                    <DraggableItem
-                      id={header.column.id}
-                      content={
-                        flexRender(header.column.columnDef.header, header.getContext()) as string
-                      }
-                    >
-                      <div
-                        class={
-                          header.column.getCanSort()
-                            ? 'flex items-center justify-between p-2 select-none'
-                            : 'p-2'
-                        }
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        <span class="flex items-center gap-1">
-                          <RiEditorDraggable class="text-gray-400" />
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                        <span>
-                          {{
-                            asc: <AiFillCaretDown />,
-                            desc: <AiFillCaretUp />,
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </span>
-                      </div>
-                    </DraggableItem>
-                  </Show>
-                </div>
-              )}
-            </For>
-          </div>
-        )}
-      </For>
-      <div class="min-h-0 flex-1 overflow-auto">
-        <For each={table.getRowModel().rows}>
-          {(row, index) => (
-            <div class={clsx('flex', index() % 2 === 0 ? 'bg-white' : 'bg-gray-100')}>
-              <For each={row.getVisibleCells()}>
-                {(cell) => (
+    <div class="flex w-fit flex-col">
+      <div
+        class="flex max-h-150 w-fit flex-col border border-gray-300"
+        style={columnSizeVars()}
+        role="table"
+      >
+        <For each={table.getHeaderGroups()}>
+          {(headerGroup) => (
+            <div class="flex w-fit border-b border-gray-300 bg-white pr-4" role="rowgroup">
+              <For each={headerGroup.headers}>
+                {(header) => (
                   <div
-                    class="border-gray-300 p-2 not-last:border-r"
+                    class="border-gray-300 p-0 not-last:border-r"
                     style={{
-                      width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
+                      width: `calc(var(--col-${header?.id}-size) * 1px)`,
                     }}
+                    role="row"
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <Show when={!header.isPlaceholder}>
+                      <DraggableItem
+                        id={header.column.id}
+                        content={
+                          flexRender(header.column.columnDef.header, header.getContext()) as string
+                        }
+                      >
+                        <div
+                          class={
+                            header.column.getCanSort()
+                              ? 'flex items-center justify-between p-2 select-none'
+                              : 'p-2'
+                          }
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          <span class="flex items-center gap-1">
+                            <RiEditorDraggable class="text-gray-400" />
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                          </span>
+                          <span>
+                            {{
+                              asc: <AiFillCaretDown />,
+                              desc: <AiFillCaretUp />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </span>
+                        </div>
+                      </DraggableItem>
+                    </Show>
                   </div>
                 )}
               </For>
             </div>
           )}
         </For>
+        <div class="min-h-0 flex-1 overflow-y-scroll" role="rowgroup">
+          <Show
+            when={data().length > 0}
+            fallback={
+              <div class="flex items-center justify-center bg-white p-4 text-gray-500" role="row">
+                No results
+              </div>
+            }
+          >
+            <For each={table.getRowModel().rows}>
+              {(row, index) => (
+                <div
+                  class={clsx('flex', index() % 2 === 0 ? 'bg-white' : 'bg-gray-100')}
+                  role="row"
+                >
+                  <For each={row.getVisibleCells()}>
+                    {(cell) => (
+                      <div
+                        class="border-gray-300 p-2 not-last:border-r"
+                        style={{
+                          width: `calc(var(--col-${cell.column.id}-size) * 1px)`,
+                        }}
+                        role="cell"
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    )}
+                  </For>
+                </div>
+              )}
+            </For>
+          </Show>
+        </div>
       </div>
-      <div class="flex items-center justify-between border-t border-gray-300 bg-white py-1">
+      <div class="flex items-center justify-between border-x border-b border-gray-300 bg-white py-1">
         <div class="flex items-center gap-1">
           <button
             class="m-1 flex items-center px-3 py-1"
@@ -233,6 +253,7 @@ export default function Table({ data, columns }: TableProps<any>) {
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
+            aria-label="Page size"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option value={pageSize}>{pageSize}</option>

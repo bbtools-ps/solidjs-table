@@ -110,7 +110,7 @@ export function DraggableItem(props: { id: string; content: string; children?: a
 
   return (
     <>
-      <div class="relative">
+      <div class="relative" role="columnheader">
         <div
           ref={ref}
           data-column-id={props.id}
