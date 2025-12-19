@@ -69,7 +69,7 @@ export function DraggableItem(props: { id: string; content: string; children?: a
         if (source.element === element) {
           return false;
         }
-        // only allowing tasks to be dropped on me
+        // only allowing items to be dropped on me
         return source.data.type === 'DRAGGABLE_ITEM';
       },
       getData({ input }) {
@@ -124,14 +124,13 @@ export function DraggableItem(props: { id: string; content: string; children?: a
       </div>
       {state().type === 'preview' ? (
         <Portal mount={state().container}>
-          <DragPreview content={props.content} />
+          <DragOverlay content={props.content} />
         </Portal>
       ) : null}
     </>
   );
 }
 
-// A simplified version of our task for the user to drag around
-function DragPreview(props: { content: string }) {
-  return <div class="rounded border-solid bg-white p-2">{props.content}</div>;
+function DragOverlay(props: { content: string }) {
+  return <div class="rounded bg-white p-2">{props.content}</div>;
 }
