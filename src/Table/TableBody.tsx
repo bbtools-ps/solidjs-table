@@ -11,7 +11,7 @@ export default function TableBody() {
   }
 
   return (
-    <div class="min-h-0 flex-1 overflow-y-scroll" role="rowgroup">
+    <div class="min-h-0 flex-1 overflow-y-scroll" role="rowgroup" tabIndex={0}>
       <Show
         when={data().length > 0}
         fallback={
