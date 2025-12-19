@@ -23,15 +23,59 @@ export default function Pagination({ table }: PaginationProps) {
             each={(() => {
               const current = table.getState().pagination.pageIndex;
               const total = table.getPageCount();
-              const maxPages = Math.min(5, total - current);
-              const pages = Array.from({ length: maxPages }, (_, i) =>
-                i + 1 === maxPages && maxPages === 5 ? '...' : current + i
-              );
+              const pageRangeSize = 5;
+
+              // Calculate which range the current page is in
+              const currentRange = Math.floor(current / pageRangeSize);
+              const rangeStart = currentRange * pageRangeSize;
+              const rangeEnd = Math.min(rangeStart + pageRangeSize, total);
+
+              // Create array of page numbers in current range
+              const pages: (number | string)[] = [];
+
+              // Add "..." at the start if there are previous ranges
+              if (currentRange > 0) {
+                pages.push('prev');
+              }
+
+              // Add page numbers in current range
+              for (let i = rangeStart; i < rangeEnd; i++) {
+                pages.push(i);
+              }
+
+              // Add "..." at the end if there are more pages
+              if (rangeEnd < total) {
+                pages.push('next');
+              }
+
               return pages;
             })()}
           >
             {(page) => (
-              <Show when={typeof page === 'number'} fallback={<span class="mx-1">...</span>}>
+              <Show
+                when={typeof page === 'number'}
+                fallback={
+                  <button
+                    class="flex items-center px-3 py-1 hover:bg-blue-100"
+                    onClick={() => {
+                      const currentRange = Math.floor(table.getState().pagination.pageIndex / 5);
+                      if (page === 'prev') {
+                        const prevRangeEnd = currentRange * 5 - 1;
+                        if (prevRangeEnd >= 0) {
+                          table.setPageIndex(prevRangeEnd);
+                        }
+                      } else if (page === 'next') {
+                        const nextRangeStart = (currentRange + 1) * 5;
+                        if (nextRangeStart < table.getPageCount()) {
+                          table.setPageIndex(nextRangeStart);
+                        }
+                      }
+                    }}
+                  >
+                    ...
+                  </button>
+                }
+              >
                 <button
                   class={`flex items-center px-3 py-1 ${
                     table.getState().pagination.pageIndex === page
