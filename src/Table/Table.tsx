@@ -29,6 +29,8 @@ interface TableProps<T> {
   columns: ColumnDef<T>[];
   isReorderable?: boolean;
   isSortable?: boolean;
+  isSelectable?: boolean;
+  isResizable?: boolean;
 }
 
 export default function Table({
@@ -36,6 +38,8 @@ export default function Table({
   columns,
   isReorderable = false,
   isSortable = false,
+  isSelectable = false,
+  isResizable = true,
 }: TableProps<any>) {
   const [sorting, setSorting] = createSignal<SortingState[]>([{ id: 'firstName', desc: false }]);
   const [pagination, setPagination] = createSignal<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -45,7 +49,43 @@ export default function Table({
     get data() {
       return data();
     },
-    columns,
+    columns: isSelectable
+      ? [
+          {
+            id: 'select',
+            header: ({ table }) => {
+              let checkboxRef: HTMLInputElement | undefined;
+              createEffect(() => {
+                if (checkboxRef) {
+                  checkboxRef.indeterminate = table.getIsSomeRowsSelected();
+                }
+              });
+              return (
+                <div class="flex flex-1 items-center justify-center">
+                  <input
+                    ref={checkboxRef}
+                    type="checkbox"
+                    checked={table.getIsAllRowsSelected()}
+                    onChange={table.getToggleAllRowsSelectedHandler()}
+                  />
+                </div>
+              );
+            },
+            cell: ({ row }) => (
+              <div class="flex flex-1 items-center justify-center">
+                <input
+                  type="checkbox"
+                  checked={row.getIsSelected()}
+                  disabled={!row.getCanSelect()}
+                  onChange={row.getToggleSelectedHandler()}
+                />
+              </div>
+            ),
+            size: 40,
+          },
+          ...columns,
+        ]
+      : columns,
     state: {
       get sorting() {
         return sorting();
@@ -63,6 +103,7 @@ export default function Table({
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     onColumnOrderChange: setColumnOrder,
+    columnResizeMode: 'onChange',
   });
 
   const columnSizeVars = createMemo(() => {
@@ -123,7 +164,9 @@ export default function Table({
   });
 
   return (
-    <TableContext.Provider value={{ table, data, isSortable, isReorderable }}>
+    <TableContext.Provider
+      value={{ table, data, isSortable, isReorderable, isSelectable, isResizable }}
+    >
       <div class="flex w-fit flex-col">
         <div
           class="flex max-h-150 w-fit flex-col border border-gray-300"

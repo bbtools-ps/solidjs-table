@@ -9,6 +9,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import { RiEditorDraggable } from 'solid-icons/ri';
 import { createEffect, createSignal, type JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import invariant from 'tiny-invariant';
@@ -110,14 +111,16 @@ export function DraggableItem(props: { id: string; content: string; children?: a
 
   return (
     <>
-      <div class="relative" role="columnheader">
+      <div class="relative flex flex-1" role="columnheader">
         <div
           ref={ref}
           data-column-id={props.id}
-          class={`flex h-full w-full items-center ${stateStyles[state().type] ?? ''}`}
+          class={`flex flex-1 items-center ${stateStyles[state().type] ?? ''}`}
         >
+          <RiEditorDraggable />
           {props.children}
         </div>
+
         {state().type === 'is-dragging-over' && state().closestEdge ? (
           <DropIndicator edge={state().closestEdge!} gap="0px" />
         ) : null}

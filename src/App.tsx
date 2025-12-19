@@ -77,7 +77,7 @@ export default function App() {
         placeholder="Type to filter by first name..."
         class="mb-4 w-4xl border p-2"
       />
-      <Table data={data} columns={COLUMNS} isReorderable isSortable />
+      <Table data={data} columns={COLUMNS} isReorderable isSortable isSelectable isResizable />
     </main>
   );
 }

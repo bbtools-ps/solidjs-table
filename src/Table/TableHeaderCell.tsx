@@ -1,6 +1,6 @@
 import { flexRender, Header } from '@tanstack/solid-table';
+import { clsx } from 'clsx';
 import { AiFillCaretDown, AiFillCaretUp } from 'solid-icons/ai';
-import { RiEditorDraggable } from 'solid-icons/ri';
 import { For, Show } from 'solid-js';
 import { DraggableItem } from './DraggableItem';
 import { useTableContext } from './useTableContext';
@@ -29,27 +29,21 @@ interface TableHeaderCellProps {
 }
 
 function TableHeaderCell({ header }: TableHeaderCellProps) {
-  const { isSortable } = useTableContext();
+  const { isSortable, isResizable } = useTableContext();
 
   return (
     <div
-      class={
-        isSortable && header.column.getCanSort()
-          ? 'flex flex-1 items-center justify-between p-2 select-none'
-          : 'p-2'
-      }
+      class={'flex flex-1 items-center justify-between p-2 select-none'}
       onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
     >
-      <span class="flex items-center gap-1">
-        {flexRender(header.column.columnDef.header, header.getContext())}
-      </span>
+      {flexRender(header.column.columnDef.header, header.getContext())}
       <SortIndicator header={header} />
     </div>
   );
 }
 
 export default function TableHeader() {
-  const { table, isReorderable } = useTableContext();
+  const { table, isReorderable, isSelectable, isResizable } = useTableContext();
 
   if (!table) {
     return null;
@@ -62,23 +56,35 @@ export default function TableHeader() {
           <For each={headerGroup.headers}>
             {(header) => (
               <div
-                class="border-gray-300 p-0 not-last:border-r"
+                class="relative flex border-gray-300 p-0 not-last:border-r"
                 style={{
                   width: `calc(var(--col-${header?.id}-size) * 1px)`,
                 }}
                 role="row"
               >
                 <Show when={!header.isPlaceholder}>
-                  <Show when={isReorderable} fallback={<TableHeaderCell header={header} />}>
+                  <Show
+                    when={isReorderable && !(isSelectable && header.column.id === 'select')}
+                    fallback={<TableHeaderCell header={header} />}
+                  >
                     <DraggableItem
                       id={header.column.id}
                       content={
                         flexRender(header.column.columnDef.header, header.getContext()) as string
                       }
                     >
-                      <RiEditorDraggable />
                       <TableHeaderCell header={header} />
                     </DraggableItem>
+                    <Show when={isResizable}>
+                      <div
+                        onMouseDown={isResizable ? header.getResizeHandler() : undefined}
+                        onTouchStart={isResizable ? header.getResizeHandler() : undefined}
+                        class={clsx(
+                          'absolute top-0 right-0 h-full w-1 cursor-col-resize touch-none bg-blue-500 opacity-0 select-none hover:opacity-100',
+                          header.column.getIsResizing() ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </Show>
                   </Show>
                 </Show>
               </div>

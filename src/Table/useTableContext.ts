@@ -6,6 +6,8 @@ interface TableContextType {
   data: () => any[];
   isSortable: boolean;
   isReorderable: boolean;
+  isSelectable: boolean;
+  isResizable: boolean;
 }
 
 export const TableContext = createContext<TableContextType>({
@@ -13,6 +15,8 @@ export const TableContext = createContext<TableContextType>({
   data: () => [],
   isSortable: false,
   isReorderable: false,
+  isSelectable: false,
+  isResizable: false,
 });
 
 export function useTableContext() {
