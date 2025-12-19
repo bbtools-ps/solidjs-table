@@ -1,5 +1,6 @@
 import { flexRender, Header } from '@tanstack/solid-table';
 import { AiFillCaretDown, AiFillCaretUp } from 'solid-icons/ai';
+import { RiEditorDraggable } from 'solid-icons/ri';
 import { For, Show } from 'solid-js';
 import { DraggableItem } from './DraggableItem';
 import { useTableContext } from './useTableContext';
@@ -34,7 +35,7 @@ function TableHeaderCell({ header }: TableHeaderCellProps) {
     <div
       class={
         isSortable && header.column.getCanSort()
-          ? 'flex items-center justify-between p-2 select-none'
+          ? 'flex flex-1 items-center justify-between p-2 select-none'
           : 'p-2'
       }
       onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
@@ -75,6 +76,7 @@ export default function TableHeader() {
                         flexRender(header.column.columnDef.header, header.getContext()) as string
                       }
                     >
+                      <RiEditorDraggable />
                       <TableHeaderCell header={header} />
                     </DraggableItem>
                   </Show>

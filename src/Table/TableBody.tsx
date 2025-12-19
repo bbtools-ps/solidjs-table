@@ -22,7 +22,10 @@ export default function TableBody() {
       >
         <For each={table.getRowModel().rows}>
           {(row, index) => (
-            <div class={clsx('flex', index() % 2 === 0 ? 'bg-white' : 'bg-gray-100')} role="row">
+            <div
+              class={clsx('flex hover:bg-blue-100', index() % 2 === 0 ? 'bg-white' : 'bg-gray-100')}
+              role="row"
+            >
               <For each={row.getVisibleCells()}>
                 {(cell) => (
                   <div

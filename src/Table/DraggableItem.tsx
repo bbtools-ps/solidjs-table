@@ -114,7 +114,7 @@ export function DraggableItem(props: { id: string; content: string; children?: a
         <div
           ref={ref}
           data-column-id={props.id}
-          class={`h-full w-full ${stateStyles[state().type] ?? ''}`}
+          class={`flex h-full w-full items-center ${stateStyles[state().type] ?? ''}`}
         >
           {props.children}
         </div>

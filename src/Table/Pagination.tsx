@@ -9,9 +9,9 @@ interface PaginationProps {
 export default function Pagination({ table }: PaginationProps) {
   return (
     <div class="flex items-center justify-between border-x border-b border-gray-300 bg-white py-1">
-      <div class="flex items-center gap-1">
+      <div class="mx-1 flex items-stretch gap-1">
         <button
-          class="m-1 flex items-center px-3 py-1"
+          class="flex items-center px-2 py-1 hover:bg-blue-100"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
           aria-label="Previous page"
@@ -34,7 +34,9 @@ export default function Pagination({ table }: PaginationProps) {
               <Show when={typeof page === 'number'} fallback={<span class="mx-1">...</span>}>
                 <button
                   class={`flex items-center px-3 py-1 ${
-                    table.getState().pagination.pageIndex === page ? 'bg-blue-500 text-white' : ''
+                    table.getState().pagination.pageIndex === page
+                      ? 'bg-blue-500 text-white'
+                      : 'hover:bg-blue-100'
                   }`}
                   onClick={() => table.setPageIndex(page as number)}
                 >
@@ -45,25 +47,27 @@ export default function Pagination({ table }: PaginationProps) {
           </For>
         </Show>
         <button
-          class="m-1 flex items-center px-3 py-1"
+          class="flex items-center px-2 py-1 hover:bg-blue-100"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
           aria-label="Next page"
         >
           <AiFillCaretRight />
         </button>
-        <select
-          class="h-full"
-          value={table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
-          }}
-          aria-label="Page size"
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option value={pageSize}>{pageSize}</option>
-          ))}
-        </select>
+        <div class="flex items-center">
+          <select
+            class="h-full"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+            aria-label="Page size"
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option value={pageSize}>{pageSize}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <span class="mx-2">
         {`${table.getState().pagination.pageIndex + 1} - ${table.getPageCount()} of ${table.getRowCount()} items`}
