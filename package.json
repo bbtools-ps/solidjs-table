@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
+  "name": "solidjs-table",
   "version": "0.0.0",
-  "description": "",
+  "description": "A table component built with SolidJS and TanStack Table",
   "type": "module",
   "scripts": {
     "start": "vite",
